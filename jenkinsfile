@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    environment {
+        GITHUB_REPO = 'https://github.com/punkky108/IGP-apr27.git'
+        DOCKER_IMAGE = 'punkkycloud108/Abc-technologies:latest'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: "${GITHUB_REPO}"
+            }
+        }
+
+        stage('Build & Test with Maven') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE .'
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: '36b5311b-0cd7-4f71-b752-39335a5d0a22', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                    sh 'docker push $DOCKER_IMAGE'
+                }
+            }
+        }
+
+        stage('Install Kubernetes on Master & Worker Nodes') {
+            steps {
+                sh '''
+                ansible-playbook -i hosts.ini install-k8s.yaml
+                '''
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                kubectl create deployment my-app --image=$DOCKER_IMAGE
+                kubectl expose deployment my-app --type=LoadBalancer --port=8080
+                '''
+            }
+        }
+    }
+}
