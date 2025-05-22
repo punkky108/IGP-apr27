@@ -1,0 +1,22 @@
+---
+- hosts: kubernetes-master, kubernetes-worker
+  become: yes
+  tasks:
+    - name: Install Docker & Kubernetes
+      apt:
+        name:
+          - docker.io
+          - kubeadm
+          - kubelet
+          - kubectl
+        state: present
+        update_cache: yes
+
+    - name: Enable services
+      systemd:
+        name: "{{ item }}"
+        enabled: yes
+        state: started
+      loop:
+        - docker
+        - kubelet
