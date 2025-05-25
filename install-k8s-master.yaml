@@ -1,0 +1,30 @@
+---
+- hosts: kubernetes-master
+  become: yes
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Enable & Start Docker
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Install Kubernetes components
+      apt:
+        name:
+          - kubeadm
+          - kubelet
+          - kubectl
+        state: present
+        update_cache: yes
+
+    - name: Enable Kubernetes services
+      systemd:
+        name: kubelet
+        enabled: yes
+        state: started
