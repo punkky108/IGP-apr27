@@ -1,5 +1,5 @@
 ---
-- hosts: kubernetes-worker
+- hosts: kubernetes_worker
   become: yes
   tasks:
     - name: Install Kubernetes components
