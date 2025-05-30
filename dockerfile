@@ -5,7 +5,7 @@ FROM tomcat:9.0
 ENV JAVA_OPTS="-Xms512m -Xmx1024m"
 
 # Copy the built WAR file into Tomcat's webapps directory
-COPY target/your-app.war /usr/local/tomcat/webapps/
+COPY target/ABCtechnologies-1.0.war /usr/local/tomcat/webapps/
 
 # Expose Tomcat's default port
 EXPOSE 8080
