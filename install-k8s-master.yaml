@@ -1,5 +1,5 @@
 ---
-- hosts: kubernetes-master
+- hosts: kubernetes_master
   become: yes
   tasks:
     - name: Install Docker
