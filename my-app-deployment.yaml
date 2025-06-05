@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: abc-technologies-deployment
+  labels:
+    app: abc-technologies
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: abc-technologies
+  template:
+    metadata:
+      labels:
+        app: abc-technologies
+    spec:
+      containers:
+        - name: abc-technologies
+          image: punkkycloud108/abc-technologies
+          ports:
+            - containerPort: 8080
